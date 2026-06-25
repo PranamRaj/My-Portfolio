@@ -1,0 +1,166 @@
+/* --- About Section Base Container --- */
+.about-container {
+    min-height: 100vh;
+    width: 100%;
+    background-color: #0b0b0d;
+    /* Slightly altered black background for depth layering */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8rem 6rem;
+    box-sizing: border-box;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Structural Row Configuration */
+.about-wrapper {
+    max-width: 1400px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    /* Asymmetric look */
+    gap: 6rem;
+    align-items: flex-start;
+}
+
+/* --- Left Column Layout --- */
+.about-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.section-tag {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #3b82f6;
+    letter-spacing: 2px;
+    margin: 0 0 1.5rem 0;
+}
+
+.section-heading {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    margin: 0 0 2rem 0;
+}
+
+.about-description {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #a0a0aa;
+    line-height: 1.7;
+    margin: 0 0 1.5rem 0;
+}
+
+/* --- Right Column (Grid Showcase) --- */
+.about-right {
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 1px;
+    margin: 0 0 1.5rem 0;
+}
+
+/* Auto-fitting fluid card columns */
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+/* --- Premium Tech Stack Cards --- */
+.tech-card {
+    position: relative;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+
+.card-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.skill-cat {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+}
+
+.skill-name {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+
+/* --- Hover Reactions & Tech Accent Colors --- */
+.tech-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-glow);
+}
+
+/* Dynamic Radial Aura behind the card on hover */
+.tech-card::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 120px;
+    background-color: var(--accent-glow);
+    filter: blur(45px);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.tech-card:hover::before {
+    opacity: 0.22;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* --- Responsive Scaling Breaks --- */
+@media (max-width: 1024px) {
+    .about-wrapper {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-container {
+        padding: 6rem 2rem;
+    }
+
+    .section-heading {
+        font-size: 2.2rem;
+    }
+}

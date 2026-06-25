@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+/* Register Custom Variable Engine for smooth border rotations */
+@property --spin-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+/* --- Floating Pill Main Header --- */
+.main-header {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1200px;
+    z-index: 1000;
+
+    /* Pill Sizing & Structure */
+    padding: 0.75rem 3.5rem;
+    border-radius: 100px;
+    box-sizing: border-box;
+
+    /* Glassmorphic Layering styling */
+    background: rgba(10, 10, 12, 0.75);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+
+    /* Static outer subtle border edge wrapper */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    transition: border-color 0.3s ease;
+}
+
+.Header-contents {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- Brand Logo Identity --- */
+.Myname {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.Myname::after {
+    content: '.';
+    color: #3b82f6;
+    /* Premium branding accent dot */
+    font-size: 1.8rem;
+    line-height: 0;
+}
+
+.Myname:hover {
+    transform: scale(1.02);
+}
+
+/* --- Navigation Link Menu --- */
+.Header-contents ul {
+    display: flex;
+    list-style: none;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+.Header-contents ul li {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #cccccc;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    position: relative;
+
+    /* Dimensions for pill borders */
+    padding: 0.55rem 1.35rem;
+    border-radius: 50px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    display: inline-block;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Base structural boundary container placeholder mask */
+.Header-contents ul li::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50px;
+    padding: 2px;
+    background: rgba(255, 255, 255, 0.08);
+    /* Ghost gray layout outline initially */
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    transition: background 0.3s ease;
+}
+
+/* --- Interactive Hover states --- */
+.Header-contents ul li:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.03);
+    box-shadow: 0 10px 25px -10px rgba(59, 130, 246, 0.2);
+}
+
+/* Activating the swirling conic color ring */
+.Header-contents ul li:hover::before {
+    background: conic-gradient(from var(--spin-angle),
+            #ff3333,
+            #ff9933,
+            #ffff33,
+            #33ff33,
+            #3333ff,
+            #9933ff,
+            #ff3399,
+            #ff3333);
+    animation: spinRainbow 1.8s linear infinite;
+}
+
+/* --- Color Rotation Keyframes --- */
+@keyframes spinRainbow {
+    from {
+        --spin-angle: 0deg;
+    }
+
+    to {
+        --spin-angle: 360deg;
+    }
+}
+
+/* --- Fluid Screen Scales --- */
+@media (max-width: 768px) {
+    .main-header {
+        top: 12px;
+        padding: 0.6rem 1.8rem;
+        width: 94%;
+    }
+
+    .Myname {
+        font-size: 1.15rem;
+    }
+
+    .Header-contents ul {
+        gap: 0.25rem;
+    }
+
+    .Header-contents ul li {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+    }
+}
