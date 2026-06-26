@@ -1,0 +1,142 @@
+.browser-container {
+    width: 100%;
+    max-width: 900px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    background: #1e1e1e;
+    border: 1px solid #333;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 20px auto;
+}
+
+/* Header/Toolbar styling */
+.browser-header {
+    background: #2d2d2d;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid #3c3c3c;
+}
+
+/* Window Control Dots */
+.browser-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.close {
+    background: #ff5f56;
+}
+
+.minimize {
+    background: #ffbd2e;
+}
+
+.expand {
+    background: #27c93f;
+}
+
+/* Navigation & Address Bar layout */
+.browser-actions {
+    display: flex;
+    align-items: center;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-btn:hover {
+    background: #444;
+    color: #fff;
+}
+
+.browser-address-bar {
+    flex-grow: 1;
+    background: #1e1e1e;
+    border: 1px solid #3c3c3c;
+    border-radius: 6px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #888;
+}
+
+.lock-icon {
+    font-size: 12px;
+    color: #27c93f;
+}
+
+.url-text {
+    user-select: none;
+}
+
+/* Body Content & Loader Frame */
+.browser-body {
+    position: relative;
+    width: 100%;
+    height: 550px;
+    background: #fff;
+}
+
+.browser-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #fff;
+}
+
+/* Loader Screen Overlay Overlay */
+.browser-loader-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(30, 30, 30, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    gap: 15px;
+    z-index: 10;
+}
+
+/* Circular Loading Spinner */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #3c3c3c;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,66 @@
+/* Container wrapper must block normal scrolling bounds */
+.horizontal-scroll-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #121212;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Header style wrapper pinned at top of view */
+.section-title-fixed {
+    position: absolute;
+    top: 40px;
+    left: 60px;
+    z-index: 5;
+    color: #ffffff;
+    font-family: sans-serif;
+}
+
+.section-title-fixed h2 {
+    font-size: 2.5rem;
+    margin: 0 0 8px 0;
+}
+
+.section-title-fixed p {
+    color: #666;
+    margin: 0;
+}
+
+/* The horizontal track managed by GSAP */
+.projects-horizontal-track {
+    display: flex;
+    flex-wrap: nowrap;
+    will-change: transform;
+    padding-left: 60px;
+    /* Aligns with our fixed title offset */
+    padding-right: 100px;
+    /* Room for final element bounce spacing */
+}
+
+/* Individual container panels across the screen slide */
+.project-slide-card {
+    width: 85vw;
+    /* Fills most of the user's viewport width */
+    flex-shrink: 0;
+    /* Prevents flexbox from squeezing layout blocks down */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+
+.project-meta-info {
+    margin-bottom: 15px;
+    color: #ffffff;
+    font-family: sans-serif;
+}
+
+.project-meta-info h3 {
+    font-size: 1.8rem;
+    margin: 0;
+}
