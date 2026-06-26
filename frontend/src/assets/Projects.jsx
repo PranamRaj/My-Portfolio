@@ -43,15 +43,13 @@ const Projects = () => {
     const myProjects = [
         { id: 1, title: "E-Commerce App", url: "https://vercel.app" },
         { id: 2, title: "Social Media Platform", url: "https://vercel.app" },
-        { id: 3, title: "Task Manager Tool", url: "https://vercel.app" },
     ];
 
     return (
         <div ref={containerRef} className="horizontal-scroll-container">
             {/* Dynamic Title Stays Fixed on Top Layout */}
-            <div className="section-title-fixed">
-                <h2>Featured MERN Applications</h2>
-                <p>Scroll down to browse side-to-side</p>
+            <div className="section-tag">
+                Projects
             </div>
 
             {/* This track houses all items and gets shifted left by GSAP */}

@@ -139,7 +139,8 @@ function Skills() {
 
     return (
         <section className="skills-section">
-            <h1 className="skills-title">Technical Core Architecture</h1>
+            <div className="section-tag">SKILLS</div>
+            <h1 className="skills-title">Continuously feeding <span className='accent-text'>frameworks</span> and tools into the <span className="accent-text">central processing core.</span></h1>
 
             <div className="skills-wrapper" ref={containerRef}>
                 {/* Fixed Overlay Canvas Positioning */}
