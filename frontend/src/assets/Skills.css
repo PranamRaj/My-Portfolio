@@ -1,127 +1,148 @@
-/* --- About Section Base Container --- */
-.skills-container {
-    width: 100%;
-    height: auto;
-    padding: 3rem 6rem;
-    box-sizing: border-box;
-    position: relative;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    display: grid;
-    grid-template-columns: repeat(4, minmax(250px, 1fr));
-    gap: 50px;
-    margin: 5rem auto;
-}
-
-/* Structural Row Configuration */
-.skills-wrapper {
-    width: 100%;
-    display: flex;
-    align-items: center;
+.skills-section {
+    background-color: #141414;
+    padding: 80px 40px;
+    color: #ffffff;
+    font-family: 'Inter', system-ui, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 100vh;
     justify-content: center;
-    margin: 0 auto;
-    background-color: #0a0a0a;
-    margin: 20px auto;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.skills-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 60px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #ffffff, #8a99ad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* 3-Column Grid Layout Framework */
+.skills-wrapper {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 220px 1fr;
+    /* Left card, Central brain spacer, Right card */
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.skills-column {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    /* Expands space vertically between cards */
+    width: 100%;
+}
+
+/* Brain Positioning Isolation */
+.brain-center-node {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 5;
 }
 
 .brain-image {
-    width: 300px;
-    height: 200px;
-    max-width: 300px;
-    border-radius: 20px;
-    overflow: hidden;
-    background: transparent;
+    width: 250px;
+    height: 250px;
+    will-change: filter, transform;
+    filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.2));
 }
 
-.brain-image img {
+.brain-icon {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    box-shadow: inset 0 0 10px rgba(38, 177, 224, 0.5);
+    object-fit: contain;
 }
 
-/* Container framework adjustments */
-
-.skills-title {
-    color: #28758e;
-    font-size: 3rem;
-    margin-bottom: 30px;
-    letter-spacing: 0.5px;
-}
-
-
-.skill-category-card {
-    width: auto;
-    height: auto;
-    max-height: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    background: #16161a;
-    border: 1px solid #202022;
-    border-radius: 12px;
-    padding: 20px;
-}
-
-/* Stack Section Headings */
-.category-label {
-    color: #888893;
-    font-size: 1.1rem;
-    font-weight: 600;
-    min-width: 140px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 10px;
-}
-
-/* Flex-wrap zone for bubble groupings */
-.bubble-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    margin: 0 10px;
-}
-
-/* Dark glass capsule layout element with default styles */
-.skill-bubble {
-    background: rgba(255, 255, 255, 0.03);
-    color: #e4e4e7;
-    padding: 8px 18px;
-    font-size: 1rem;
-    font-weight: 500;
-    border-radius: 50px;
-    /* Perfect bubble round radius */
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    cursor: default;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    position: relative;
-}
-
-/* Interactive dynamic neon glow state */
-.skill-bubble:hover {
-    color: #64ffda;
-    /* Premium aqua accent color change */
-    background: rgba(100, 255, 218, 0.06);
-    border-color: #64ffda;
-    transform: translateY(-2px);
-    /* Slight lift effect */
-
-    /* Multi-layered box-shadow handles the realistic radiant glow aura */
-    box-shadow: 0 0 12px rgba(100, 255, 218, 0.2),
-        0 0 24px rgba(100, 255, 218, 0.1);
-}
-#networkCanvas{
+#networkCanvas {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 10;
+    z-index: 1;
+}
+
+/* Premium De-congested Card Design */
+.skill-category-card {
+    background: linear-gradient(135deg, rgba(13, 20, 38, 0.7) 0%, rgba(8, 12, 24, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 3px solid var(--accent-color);
+    border-radius: 16px;
+    padding: 30px;
+    /* Lots of internal padding space */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(16px);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    z-index: 3;
+}
+
+.skill-category-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+}
+
+.category-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    /* Space out title from bubbles */
+    letter-spacing: 1px;
+    color: #f3f4f6;
+}
+
+/* De-congested Bubble Layout */
+.bubble-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    /* Generous breathing room between individual skill nodes */
+}
+
+.skill-bubble {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 30px;
+    padding: 8px 18px;
+    /* Clean tracking padding boundaries */
+    font-size: 0.9rem;
+    color: #d1d5db;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+.skill-bubble:hover {
+    background: var(--accent-color);
+    color: #030611;
+    font-weight: 600;
+    box-shadow: 0 0 15px var(--accent-color);
+    border-color: transparent;
+}
+
+/* Responsive Fallback: Drop back to a single column on mobile viewports */
+@media (max-width: 900px) {
+    .skills-wrapper {
+        grid-template-columns: 1fr;
+        gap: 50px;
+    }
+
+    .brain-center-node {
+        grid-row: 1;
+        /* Brain stays on top on mobile screen sizes */
+    }
+
+    .skills-column {
+        gap: 30px;
+    }
 }
