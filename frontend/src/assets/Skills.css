@@ -1,41 +1,39 @@
 /* --- About Section Base Container --- */
 .skills-container {
-    min-height: 100vh;
     width: 100%;
-    background-color: #0b0b0d;
+    height: auto;
     padding: 3rem 6rem;
     box-sizing: border-box;
     position: relative;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(250px, 1fr));
+    gap: 50px;
+    margin: 5rem auto;
 }
 
 /* Structural Row Configuration */
 .skills-wrapper {
-    max-width: 1400px;
     width: 100%;
     display: flex;
     align-items: center;
     display: flex;
     flex-direction: column;
-        align-items: center;
-        justify-content:center;
-        border:1px solid red;
-        margin:0 auto;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    background-color: #0a0a0a;
+    margin: 20px auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
-.heading-skills {
-    font-size: 2.5rem;
-    color: #fff;
-    margin-bottom: 2rem;
-    text-align: center;
-}
+
 .brain-image {
     width: 300px;
     height: 200px;
-    max-width:300px;
+    max-width: 300px;
     border-radius: 20px;
     overflow: hidden;
-    background:transparent;
-
+    background: transparent;
 }
 
 .brain-image img {
@@ -45,39 +43,29 @@
     border-radius: 50%;
     box-shadow: inset 0 0 10px rgba(38, 177, 224, 0.5);
 }
-/* Container framework adjustments */
-.skills-wrapper {
-    background-color: #0f0f11;
-    padding: 60px 40px;
-    border-radius: 16px;
-    max-width: 1000px;
-    margin: 40px auto;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
 
-.skills-main-title {
-    color: #ffffff;
-    font-size: 2rem;
+/* Container framework adjustments */
+
+.skills-title {
+    color: #28758e;
+    font-size: 3rem;
     margin-bottom: 30px;
     letter-spacing: 0.5px;
 }
 
-.skills-container {
+
+.skill-category-card {
+    width: auto;
+    height: auto;
+    max-height: 300px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    /* Separation space between stack lines */
-}
-
-/* Individual line card structure matching resume row formats */
-.skill-category-card {
-    display: flex;
     align-items: center;
+    text-align: center;
     background: #16161a;
-    border: 1px solid #222227;
-    padding: 16px 24px;
+    border: 1px solid #202022;
     border-radius: 12px;
-    gap: 20px;
+    padding: 20px;
 }
 
 /* Stack Section Headings */
@@ -86,10 +74,9 @@
     font-size: 1.1rem;
     font-weight: 600;
     min-width: 140px;
-    /* Aligns all chip clouds linearly */
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin: 0;
+    margin-top: 10px;
 }
 
 /* Flex-wrap zone for bubble groupings */
@@ -97,6 +84,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+    justify-content: center;
+    margin: 0 10px;
 }
 
 /* Dark glass capsule layout element with default styles */
@@ -104,7 +93,7 @@
     background: rgba(255, 255, 255, 0.03);
     color: #e4e4e7;
     padding: 8px 18px;
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 500;
     border-radius: 50px;
     /* Perfect bubble round radius */
@@ -126,4 +115,13 @@
     /* Multi-layered box-shadow handles the realistic radiant glow aura */
     box-shadow: 0 0 12px rgba(100, 255, 218, 0.2),
         0 0 24px rgba(100, 255, 218, 0.1);
+}
+#networkCanvas{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
 }

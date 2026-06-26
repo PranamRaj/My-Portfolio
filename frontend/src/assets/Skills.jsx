@@ -19,14 +19,17 @@ function Skills(){
             items: ["Node.js", "Express.js", "Git", "Docker", "REST APIs"]
         }
     ];
+
+    
+
     return(
         <section className="skills-section">
-            <div className="skills-header">
-                <img src={brainImg} alt="Brain Icon" className="brain-icon" />
-                <h1 className="skills-title">My Technical Skills</h1>
-            </div>
         <div className="skills-wrapper">
-            <h2 className="skills-main-title">Technical Expertise</h2>
+                <h1 className="skills-title">My Technical Skills</h1>
+                <div className="brain-image">
+                <img src={brainImg} alt="Brain Icon" className="brain-icon" />
+                </div>
+                <canvas id='networkCanvas'></canvas>
             <div className="skills-container">
                 {resumeSkills.map((stack, index) => (
                     <div key={index} className="skill-category-card">
@@ -45,7 +48,7 @@ function Skills(){
                 ))}
             </div>
         </div>
-        </section>
+        </section>  
     )
 }
 export default Skills;
