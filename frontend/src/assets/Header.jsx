@@ -38,8 +38,8 @@ function Header() {
 
         // 3. Scroll Reactivity (Hiding on scroll down, sliding back on up)
         const header = headerRef.current;
-        const showHideHeader = gsap.fromTo(header,
-            { y: 0 },
+        gsap.set(header, { y: 0 }); // Ensure header starts at the top
+        const showHideHeader = gsap.to(header,
             {
                 y: -120, // Slides clear out of the viewing field boundaries
                 paused: true,
@@ -49,7 +49,7 @@ function Header() {
         );
 
         ScrollTrigger.create({
-            start: "top top+=10",
+            start: "top ",
             end: "max",
             onUpdate: (self) => {
                 if (self.direction === 1) {
@@ -86,8 +86,11 @@ function Header() {
                 {/* Navigation Elements */}
                 <ul>
                     <li ref={addToRefs} onClick={() => handleScroll('home')}>Home</li>
-                    <li ref={addToRefs} onClick={() => handleScroll('about')}>About Me</li>
-                    <li ref={addToRefs} onClick={() => handleScroll('contact')}>Contact Me</li>
+                    <li ref={addToRefs} onClick={() => handleScroll('about')}>About</li>
+                    <li ref={addToRefs} onClick={() => handleScroll('skills')}>Skills</li>
+                    <li ref={addToRefs} onClick={() => handleScroll('projects')}>Projects</li>
+                    <li ref={addToRefs} onClick={() => handleScroll('contact')}>Contact</li>
+
                 </ul>
 
             </div>

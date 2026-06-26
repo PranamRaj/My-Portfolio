@@ -1,13 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import {TextPlugin} from 'gsap/TextPlugin';
 import './About.css';
 
 gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(TextPlugin);
 
 function About() {
     const sectionRef = useRef(null);
     const cardsRef = useRef([]);
+    const textRef = useRef(null);
     cardsRef.current = [];
 
     const addToCardsRef = (el) => {
@@ -17,9 +20,32 @@ function About() {
     };
 
     useEffect(() => {
-        const section = sectionRef.current;
-
+        const words = ["Curiosity", "Imagination", "Logic", "Exploration", "Innovation"];
+        const masterTl = gsap.timeline({ repeat: -1 });
+        words.forEach((word) => {
+            // Create a sub-timeline for each word
+            const wordTl = gsap.timeline({
+                repeatDelay: 0.5, // Holds the word on screen for 1.5 seconds
+                repeat: 1,        // Executes twice: types forward, then deletes backward
+                yoyo: true        // Makes the timeline reverse after the first playthrough
+            });
+            
+            wordTl.to(textRef.current, {
+                duration: word.length * 0.1, // Smooth, dynamic speed based on word length
+                text: {
+                    value: word,
+                },
+                ease: "power1.inOut",
+            });
+            
+            masterTl.add(wordTl);
+        });
+        return () => {
+            masterTl.kill();
+        };
+        
         // Fade up the introductory text block on scroll
+        const section = sectionRef.current;
         gsap.fromTo(section.querySelectorAll('.animate-about-text'),
             { opacity: 0, y: 50 },
             {
@@ -73,16 +99,19 @@ function About() {
 
                 {/* Left Side: Biography */}
                 <div className="about-left">
-                    <h5 className="section-tag animate-about-text">01 // ABOUT ME</h5>
+                    <h5 className="section-tag animate-about-text">ABOUT ME</h5>
                     <h2 className="section-heading animate-about-text">
-                        Solving Complex Problems Through Clean Architecture.
+                        Driven By <span ref={textRef} className="accent-text"></span>, Engineered For <span className="accent-text">Performance.</span>
                     </h2>
                     <p className="about-description animate-about-text">
-                        I am a Computer Science & Engineering student specializing in building robust web infrastructures.
-                        My passion lies in bridging the gap between heavy, logical backend architectures and highly interactive, fluid user interfaces.
+                        My journey into software engineering started with a simple question: how do complex systems handle millions of users seamlessly?
+                        As a student, I don't just want to build apps that work—I want to understand the underlying data structures,
+                        optimize backend logic, and ensure every animation runs at a fluid 60 frames per second.
                     </p>
                     <p className="about-description animate-about-text">
-                        When I'm not tuning queries or adjusting animation curves, I analyze engineering logic systems and experiment with modular design patterns.
+                        I thrive in the space where design meeting engineering. When I am not working on university projects,
+                        I am diving deep into open-source tools, studying clean architecture principles, and building side projects
+                        that challenge me to write more modular, maintainable code.
                     </p>
                 </div>
 

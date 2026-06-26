@@ -23,6 +23,13 @@
     gap: 6rem;
     align-items: flex-start;
 }
+.accent-text {
+    background: linear-gradient(90deg, #3b82f6, #06b6d4);
+    font-weight: 700;
+    -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+}
 
 /* --- Left Column Layout --- */
 .about-left {
