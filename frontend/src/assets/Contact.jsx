@@ -53,7 +53,7 @@ function Contact() {
         e.preventDefault();
 
         try {
-            const response = await fetch('https://us-central1-myportfolio-cbcd1.cloudfunctions.net/api/contact', {
+            const response = await fetch('https://my-portfolio-m57m.onrender.com/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)

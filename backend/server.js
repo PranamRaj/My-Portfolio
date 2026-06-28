@@ -32,12 +32,18 @@ app.use(express.json()); // Parses incoming json bodies safely
 
 // --- MAIL CONFIGURATION CONFIG ---
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: '://gmail.com',     // 🚀 PRODUCTION FIX: Explicitly call Google SMTP host
+    port: 465,                  // 🚀 PRODUCTION FIX: Force secure port 465 (Safe on Render)
+    secure: true,               // 🚀 PRODUCTION FIX: true for 465, false for other ports
     auth: {
         user: process.env.EMAIL_USER, // Your Gmail address
-        pass: process.env.EMAIL_PASS  // Gmail App Password (NOT your normal login password)
+        pass: process.env.EMAIL_PASS  // Gmail App Password (16 characters)
+    },
+    tls: {
+        rejectUnauthorized: false // Prevents local network handshake failures
     }
 });
+
 
 // --- SECURE MAIL TRANSMISSION ROUTE ---
 app.post('/api/contact', async (req, res) => {
@@ -70,7 +76,7 @@ app.post('/api/contact', async (req, res) => {
             </div>
         `
     };
-
+    
     try {
         await transporter.sendMail(mailOptions);
         return res.status(200).json({ success: 'Message dispatched securely!' });
