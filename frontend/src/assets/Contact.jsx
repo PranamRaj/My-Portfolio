@@ -49,10 +49,28 @@ function Contact() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Ready for integration with Express / Node.js Mailer API backend
-        console.log('Form Submitted securely:', formData);
+
+        try {
+            const response = await fetch('http://localhost:5000/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Success! Message transmitted securely.');
+                setFormData({ name: '', email: '', message: '' }); // Wipes fields clean
+            } else {
+                alert(`Error: ${result.error}`);
+            }
+        } catch (err) {
+            console.error('API Context error:', err);
+            alert('Server is currently dormant or sleeping. Please check your console runtime log parameters.');
+        }
     };
 
     return (
@@ -61,17 +79,17 @@ function Contact() {
 
                 {/* Left Side: Contact Information */}
                 <div className="contact-left">
-                    <h5 className="section-tag">02 // CONTACT ME</h5>
+                    <h5 className="section-tag">CONTACT ME</h5>
                     <h2 className="section-heading">Let's Build Something Exceptional Together.</h2>
                     <p className="contact-text">
-                        Whether you have a full-scale platform requirement, a technical problem to solve,
-                        or an interesting project layout to discuss, my inbox is always open.
+                        I am always looking to team up on interesting projects, solve coding puzzles, or learn something new. 
+                        Feel free to reach out and drop a message!
                     </p>
 
                     <div className="contact-info-list">
                         <div className="info-item">
                             <span className="info-label">EMAIL</span>
-                            <a href="mailto:your.email@example.com" className="info-link">your.email@example.com</a>
+                            <a href="mailto:pranamraj234@gmail.com" className="info-link">pranamraj234@gmail.com</a>
                         </div>
                         <div className="info-item">
                             <span className="info-label">LOCATION</span>

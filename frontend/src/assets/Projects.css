@@ -1,66 +1,146 @@
-/* Container wrapper must block normal scrolling bounds */
+.projects-section {
+    background-color: #0b0b0d;
+        color: #ffffff;
+        font-family: 'Inter', system-ui, sans-serif;
+        justify-content: center;
+        
+    /* Match your theme layout background color */
+}
+
+.projects-section .section-tag {
+    margin: 20px 0;
+}
+
+.project-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+    color: #f5f5f5d5;
+    text-align: center;
+    margin: 0 auto;
+    width: 80%;
+}
+
 .horizontal-scroll-container {
-    position: relative;
+    overflow: hidden;
     width: 100%;
     height: 100vh;
-    overflow: hidden;
-    background-color: #121212;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    position: relative;
 }
 
-/* Header style wrapper pinned at top of view */
-.section-title-fixed {
-    position: absolute;
-    top: 40px;
-    left: 60px;
-    z-index: 5;
-    color: #ffffff;
-    font-family: sans-serif;
-}
-
-.section-title-fixed h2 {
-    font-size: 2.5rem;
-    margin: 0 0 8px 0;
-}
-
-.section-title-fixed p {
-    color: #666;
-    margin: 0;
-}
-
-/* The horizontal track managed by GSAP */
 .projects-horizontal-track {
     display: flex;
+    flex-direction: row;
     flex-wrap: nowrap;
+    width: 200vw;
+    height: 100%;
     will-change: transform;
-    padding-left: 60px;
-    /* Aligns with our fixed title offset */
-    padding-right: 100px;
-    /* Room for final element bounce spacing */
 }
 
-/* Individual container panels across the screen slide */
 .project-slide-card {
-    width: 85vw;
-    /* Fills most of the user's viewport width */
+    width: 100vw;
+    height: 100vh;
     flex-shrink: 0;
-    /* Prevents flexbox from squeezing layout blocks down */
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 0 40px;
+    align-items: center;
     box-sizing: border-box;
 }
 
 .project-meta-info {
-    margin-bottom: 15px;
-    color: #ffffff;
+    color: #eae7e7;
     font-family: sans-serif;
+    margin: 0;
+    line-height: 1.15;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items:flex-end;
+
 }
 
-.project-meta-info h3 {
-    font-size: 1.8rem;
-    margin: 0;
+.project-info h3 {
+font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: #0ba4a6;
+    margin: 0 0 1.2rem 0;
+    text-shadow: 0 2px 10px rgba(51, 255, 231, 0.15);
+}
+
+/* Header style wrapper pinned at top of view */
+.browser-mockup-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns:1fr 1.5fr;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0;
+}
+
+.project-info {
+    position: relative;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: #f5f5f5d5;
+    text-align: center;
+    width: 50%;
+    margin: 0 10px;
+    text-align: center;
+    padding: 10px 1px;
+    width:80%;
+    
+}
+
+.project-bubble{
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #33ffe7;
+        background: rgba(51, 255, 231, 0.03);
+        border: 1px solid rgba(51, 255, 231, 0.12);
+        padding: 6px 14px;
+        border-radius: 8px;
+        letter-spacing: -0.01em;
+        margin: 0 5px;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.project-techstack {
+font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #e4e4e7;
+    display: flex;
+    flex-direction: column;
+    left:0;
+    align-items: center;
+    margin-top: 0;
+}
+.tech-label-prefix {
+    color: #71717a;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    min-width: 100px;
+}
+.project-techstack:hover .project-bubble{
+    background: rgba(51, 255, 231, 0.08);
+        border-color: rgba(51, 255, 231, 0.3);
+        box-shadow: 0 0 12px rgba(51, 255, 231, 0.1);
+        transform: translateY(-1px);
+}
+.project-description{
+    font-family: 'Inter', system-ui, sans-serif;
+        font-size: 1.05rem;
+        font-weight: 400;
+        line-height: 1.7;
+        color: #a0a0aa;
+        margin: 0 0 1rem 0;
 }

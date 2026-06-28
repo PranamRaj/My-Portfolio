@@ -3,7 +3,6 @@
     min-height: 100vh;
     width: 100%;
     background-color: #0b0b0d;
-    /* Slightly altered black background for depth layering */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -11,30 +10,37 @@
     box-sizing: border-box;
     position: relative;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    overflow: hidden;
+    /* Stops layout overflow clipping bugs */
 }
 
-/* Structural Row Configuration */
+/* 3-Column Interface Configuration Grid */
 .about-wrapper {
     max-width: 1400px;
     width: 100%;
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    /* Asymmetric look */
-    gap: 6rem;
-    align-items: flex-start;
+    /* Column 1: Text Block | Column 2: Fixed Track Line Space | Column 3: Cards Panel */
+    grid-template-columns: 1fr 40px 1fr;
+    gap: 0;
+    align-items: stretch;
+    /* Extends tracking wrapper height parameters cleanly */
+    position: relative;
 }
+
 .accent-text {
     background: linear-gradient(90deg, #3b82f6, #06b6d4);
     font-weight: 700;
     -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 /* --- Left Column Layout --- */
 .about-left {
     display: flex;
     flex-direction: column;
+    padding-right: 3rem;
+    /* Adds safe breathing room space instead of choosing grid gaps */
 }
 
 .section-tag {
@@ -54,6 +60,7 @@
     line-height: 1.2;
     letter-spacing: -1px;
     margin: 0 0 2rem 0;
+    min-height: 110px;
 }
 
 .about-description {
@@ -65,10 +72,45 @@
     margin: 0 0 1.5rem 0;
 }
 
-/* --- Right Column (Grid Showcase) --- */
+/* --- Center Track Grid Cell Layout Architecture --- */
+.track-cell-wrapper {
+    display: flex;
+    justify-content: center;
+    /* Horizontally locks line directly down center axes */
+    height: 100%;
+    position: relative;
+}
+
+.scroll-track-container {
+    position: relative;
+    width: 4px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+}
+
+/* Following Tracking Laser Ball */
+.following-ball {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    background: #00f2fe;
+    border-radius: 50%;
+    margin-left: -8px;
+    /* Perfectly offsets alignment over the 4px track line core */
+    will-change: transform;
+    box-shadow: 0 0 15px #00f2fe, 0 0 30px rgba(0, 242, 254, 0.6);
+    z-index: 10;
+}
+
+/* --- Right Column Layout --- */
 .about-right {
     display: flex;
     flex-direction: column;
+    padding-left: 3rem;
+    /* Adds safe breathing room space instead of choosing grid gaps */
 }
 
 .grid-title {
@@ -80,11 +122,11 @@
     margin: 0 0 1.5rem 0;
 }
 
-/* Auto-fitting fluid card columns */
 .tech-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    /* Separates the cards nicely vertically */
 }
 
 /* --- Premium Tech Stack Cards --- */
@@ -93,10 +135,11 @@
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 1.5rem;
+    padding: 1.8rem;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+    will-change: transform, box-shadow, border-color;
 }
 
 .card-inner {
@@ -110,38 +153,39 @@
 
 .skill-cat {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 1rem;
+    line-height: 1.8;
 }
 
 .skill-name {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #ffffff;
     margin: 0;
+    line-height: 1.4;
 }
 
-/* --- Hover Reactions & Tech Accent Colors --- */
+/* --- Hover Reactions & Ambient Neon Lighting Aura --- */
 .tech-card:hover {
     transform: translateY(-5px);
     border-color: var(--accent-glow);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* Dynamic Radial Aura behind the card on hover */
 .tech-card::before {
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
     background-color: var(--accent-glow);
-    filter: blur(45px);
+    filter: blur(50px);
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.6);
     transition: opacity 0.4s ease, transform 0.4s ease;
@@ -150,15 +194,25 @@
 }
 
 .tech-card:hover::before {
-    opacity: 0.22;
+    opacity: 0.18;
     transform: translate(-50%, -50%) scale(1);
 }
 
-/* --- Responsive Scaling Breaks --- */
+/* --- Responsive Scaling Breaks — STOPS MONITOR STRETCHING --- */
 @media (max-width: 1024px) {
     .about-wrapper {
         grid-template-columns: 1fr;
-        gap: 4rem;
+        gap: 3rem;
+    }
+
+    .track-cell-wrapper {
+        display: none;
+        /* Disables the tracker component safely on mobile layout views */
+    }
+
+    .about-left,
+    .about-right {
+        padding: 0;
     }
 }
 
@@ -169,5 +223,6 @@
 
     .section-heading {
         font-size: 2.2rem;
+        min-height: auto;
     }
 }

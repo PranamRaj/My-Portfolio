@@ -1,16 +1,69 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 const cors = require('cors');
-require('dotenv').config();
+require('dotenv').config(); // Secures sensitive credentials via .env file
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
-app.use(express.json()); // Allows server to read JSON data sent from frontend
+// --- MIDDLEWARE CONFIGURATION ---
+// Restricts access to your frontend origin safely to block external spam injections
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173'
+}));
+app.use(express.json()); // Parses incoming json bodies safely
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/portfolio')
-    .then(() => console.log('MongoDB Connected Successfully'))
-    .catch(err => console.error('Database connection error:', err));
+// --- MAIL CONFIGURATION CONFIG ---
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER, // Your Gmail address
+        pass: process.env.EMAIL_PASS  // Gmail App Password (NOT your normal login password)
+    }
+});
+
+// --- SECURE MAIL TRANSMISSION ROUTE ---
+app.post('/api/contact', async (req, res) => {
+    const { name, email, message } = req.body;
+
+    // Basic data hygiene validation checkpoint
+    if (!name || !email || !message) {
+        return res.status(400).json({ error: 'All fields are strictly required.' });
+    }
+
+    // HTML Email layout customized for portfolio receipts
+    const mailOptions = {
+        from: `"${name}" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_USER, // Sends directly to your inbox
+        replyTo: email, // Direct replies inside your mail client map to the sender
+        subject: `New Portfolio Message from ${name}`,
+        html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f7; color: #333;">
+                <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <h2 style="color: #3b82f6; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; margin-top:0;">Portfolio Transmission Received</h2>
+                    <p style="margin: 15px 0;"><strong>Sender Name:</strong> ${name}</p>
+                    <p style="margin: 15px 0;"><strong>Sender Email:</strong> <a href="mailto:${email}">${email}</a></p>
+                    <div style="background-color: #f9fafb; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; font-style: italic;">
+                        "${message.replace(/\n/g, '<br>')}"
+                    </div>
+                    <p style="font-size: 12px; color: #9ca3af; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 15px;">
+                        Sent securely from your portfolio ingestion backend.
+                    </p>
+                </div>
+            </div>
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        return res.status(200).json({ success: 'Message dispatched securely!' });
+    } catch (error) {
+        console.error('Nodemailer pipeline error:', error);
+        return res.status(500).json({ error: 'Failed to dispatch message. Pipeline error.' });
+    }
+});
+
+// Start listening engine
+app.listen(PORT, () => {
+    console.log(`Portfolio server engine active on port ${PORT}`);
+});

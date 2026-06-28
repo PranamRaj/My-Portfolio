@@ -138,7 +138,7 @@ function Skills() {
     const rightSkills = resumeSkills.filter(s => s.side === "right");
 
     return (
-        <section className="skills-section">
+        <section className="skills-section" id="skills">
             <div className="section-tag">SKILLS</div>
             <h1 className="skills-title">Continuously feeding <span className='accent-text'>frameworks</span> and tools into the <span className="accent-text">central processing core.</span></h1>
 
@@ -163,6 +163,7 @@ function Skills() {
                 {/* Center Node Container */}
                 <div className="brain-center-node">
                     <div className="brain-image" ref={brainRef}>
+                        <div className="ambient-glow glow-1" style={{position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%'}}></div>
                         <img src={brainImg} alt="Neural Node Hub" className="brain-icon" />
                     </div>
                 </div>

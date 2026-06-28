@@ -19,13 +19,15 @@ function Home() {
         });
 
         // Create a sequential entry timeline that triggers right after the header drops down
-        const tl = gsap.timeline({ delay: 0.8 });
+        const tl = gsap.timeline({
+            delay: 0.8});
 
         tl.to(titleRef.current, {
             opacity: 1,
             y: 0,
             duration: 0.8,
             ease: 'power4.out'
+            
         })
             .to(subtitleRef.current, {
                 opacity: 1,
@@ -48,10 +50,36 @@ function Home() {
             .to(imageContainerRef.current, {
                 opacity: 1,
                 y: 0,
-                duration: 0.6,
+                duration: 0.3,
                 ease: 'back.out(1.5)'
             }, '-=0.3');
     }, []);
+
+    const handleMouseMove = (e) => {
+        const container = imageContainerRef.current;
+        if (!container) return;
+
+        const rect = container.getBoundingClientRect();
+
+        // Calculate mouse position relative to the center
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+
+        // Calculate rotation angles
+        const rotateX = (y / rect.height) * 50;
+        const rotateY = (x / rect.height) * 50;
+
+        // Apply inline style transforms
+        container.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
+    };
+
+    const handleMouseLeave = () => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        // Reset the position
+        container.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    };
 
     return (
         <section ref={containerRef} className="home-container" id="home">
@@ -102,12 +130,12 @@ function Home() {
                     <button className="btn-primary" onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}>
                         Let's Talk
                     </button>
-                    <button className="btn-secondary" onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' })}>
+                    <button className="btn-secondary" onClick={() => document.getElementById('projects').scrollIntoView({ behavior: 'smooth' })}>
                         View My Work
                     </button>
                 </div>
             </div>
-            <div ref={imageContainerRef} className="image-container">
+            <div ref={imageContainerRef} className="image-container" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
                 <img src={profileImage} alt="Profile" />
             </div>
         </section>
