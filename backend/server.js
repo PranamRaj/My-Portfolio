@@ -1,6 +1,7 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
+const dns = require('dns');
 require('dotenv').config(); // Secures sensitive credentials via .env file
 
 const app = express();
@@ -32,15 +33,17 @@ app.use(express.json()); // Parses incoming json bodies safely
 
 // --- MAIL CONFIGURATION CONFIG ---
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',     // 🚀 PRODUCTION FIX: Explicitly call Google SMTP host
-    port: 465,                  // 🚀 PRODUCTION FIX: Force secure port 465 (Safe on Render)
-    secure: true,               // 🚀 PRODUCTION FIX: true for 465, false for other ports
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // true for port 465
     auth: {
-        user: process.env.EMAIL_USER, // Your Gmail address
-        pass: process.env.EMAIL_PASS  // Gmail App Password (16 characters)
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     },
-    tls: {
-        rejectUnauthorized: false // Prevents local network handshake failures
+    // 🚀 THE CURE: Forces the underlying socket engine to pick IPv4 (A records) over IPv6 (AAAA records)
+    lookup: (hostname, options, callback) => {
+        options.family = 4; // Force IPv4 routing explicitly
+        return dns.lookup(hostname, options, callback);
     }
 });
 
