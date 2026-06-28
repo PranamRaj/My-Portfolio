@@ -32,7 +32,7 @@ app.use(express.json()); // Parses incoming json bodies safely
 
 // --- MAIL CONFIGURATION CONFIG ---
 const transporter = nodemailer.createTransport({
-    host: '://gmail.com',     // 🚀 PRODUCTION FIX: Explicitly call Google SMTP host
+    host: 'smtp.gmail.com',     // 🚀 PRODUCTION FIX: Explicitly call Google SMTP host
     port: 465,                  // 🚀 PRODUCTION FIX: Force secure port 465 (Safe on Render)
     secure: true,               // 🚀 PRODUCTION FIX: true for 465, false for other ports
     auth: {
