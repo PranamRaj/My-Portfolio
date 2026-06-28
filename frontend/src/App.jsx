@@ -42,6 +42,12 @@ function App() {
         <Skills />
         <Projects />
         <Contact />
+        <footer className="footer-credits" style={{ textAlign: 'center', marginTop: '0', color: '#94a3b8' }}>
+          <p>&copy; {new Date().getFullYear()} Pranam Raj. All rights reserved.</p>
+          <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '5px' }}>
+            "Designed & Developed by Pranam Raj · Optimized with Google Gemini"
+          </p>
+        </footer>
       </main>
     </>);
 }

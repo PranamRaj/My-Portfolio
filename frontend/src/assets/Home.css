@@ -176,24 +176,54 @@
     transform: translateY(-5px);
     box-shadow: 0 10px 25px 0px rgba(226, 247, 67, 0.423);
 }
-/* Responsive Scaling for smaller Viewports */
-@media (max-width: 768px) {
+/* ==========================================================================
+   STRICT MOBILE OVERRIDES (Leaves Desktop Completely Untouched)
+   ========================================================================== */
+@media (max-width: 968px) {
+    .home-container {
+        flex-direction: column-reverse;
+        /* Put picture above description text comfort */
+        justify-content: center;
+        text-align: center;
+        padding: 130px 6% 50px 6%;
+        gap: 40px;
+    }
+
+    .home-content {
+        margin-right: 0 !important;
+        /* Forces out desktop hardcoded push parameters */
+        align-items: center;
+        max-width: 100%;
+    }
+
     .home-title {
-        font-size: 2.5rem;
+        font-size: 2.4rem;
     }
 
     .home-subtitle {
-        font-size: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .image-container {
+        width: min(100%, 320px);
+        height: 380px;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-title {
+        font-size: 1.95rem;
     }
 
     .home-buttons {
         flex-direction: column;
         width: 100%;
-        gap: 0.75rem;
+        gap: 12px;
     }
 
     .btn-primary,
     .btn-secondary {
         width: 100%;
+        box-sizing: border-box;
     }
 }

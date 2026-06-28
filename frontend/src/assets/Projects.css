@@ -144,3 +144,81 @@ font-family: 'Inter', system-ui, sans-serif;
         color: #a0a0aa;
         margin: 0 0 1rem 0;
 }
+/* ==========================================================================
+   STRICT MOBILE OVERRIDES (Leaves Desktop Completely Untouched)
+   ========================================================================== */
+/* ==========================================================================
+   STRICT MOBILE OVERRIDES (Leaves Desktop Completely Untouched)
+   ========================================================================== */
+@media (max-width: 968px) {
+    .projects-section {
+        padding: 60px 0;
+    }
+
+    .project-title {
+        font-size: 1.8rem;
+        width: 90%;
+        /* Force display the header if GSAP clipping masks get stuck */
+        opacity: 1 !important;
+        clip-path: none !important;
+        transform: none !important;
+    }
+
+    .horizontal-scroll-container {
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .projects-horizontal-track {
+        flex-direction: column !important;
+        width: 100% !important;
+        /* Cancels 200vw horizontal engine */
+        height: auto !important;
+        transform: none !important;
+        /* Overrides GSAP horizontal moving mathematics */
+        gap: 80px;
+    }
+
+    .project-slide-card {
+        width: 100% !important;
+        height: auto !important;
+        padding: 20px 5%;
+    }
+
+    .browser-mockup-container {
+        display: flex !important;
+        flex-direction: column-reverse;
+        /* Places mockups cleanly above text descriptors */
+        gap: 30px;
+        width: 100%;
+        /* 🚀 CRITICAL FIX: Forces the hidden browser frame to show up on phone views */
+        opacity: 1 !important;
+        transform: none !important;
+        scale: 1 !important;
+    }
+
+    .project-info {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        text-align: center;
+    }
+
+    /* 🚀 CRITICAL FIX: Overrides GSAP's initial hidden state for child text arrays */
+    .project-name,
+    .project-description,
+    .project-techstack,
+    .project-techstack p {
+        opacity: 1 !important;
+        transform: none !important;
+        scale: 1 !important;
+    }
+
+    .project-info h3 {
+        font-size: 1.9rem;
+    }
+
+    .project-techstack {
+        align-items: center;
+    }
+}

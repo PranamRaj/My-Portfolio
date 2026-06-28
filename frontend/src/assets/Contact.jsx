@@ -151,6 +151,7 @@ function Contact() {
 
             </div>
         </section>
+        
     );
 }
 

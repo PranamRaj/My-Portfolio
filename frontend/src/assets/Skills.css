@@ -168,20 +168,46 @@
     box-shadow: 0 0 15px var(--accent-color);
     border-color: transparent;
 }
-
-/* Responsive Fallback: Drop back to a single column on mobile viewports */
+/* ==========================================================================
+   STRICT MOBILE OVERRIDES (Leaves Desktop Completely Untouched)
+   ========================================================================== */
 @media (max-width: 900px) {
+    .skills-section {
+        padding: 60px 4%;
+        margin-bottom: 40px;
+    }
+
+    .skills-title {
+        font-size: 1.8rem;
+        width: 90%;
+        margin-bottom: 30px;
+    }
+
     .skills-wrapper {
         grid-template-columns: 1fr;
-        gap: 50px;
+        gap: 35px;
     }
 
     .brain-center-node {
         grid-row: 1;
-        /* Brain stays on top on mobile screen sizes */
+        /* Pin neural brain element hub at peak top of view stack */
+    }
+
+    .brain-image {
+        width: 180px;
+        height: 180px;
+    }
+
+    #networkCanvas {
+        display: none !important;
+        /* Fully hides canvas nodes to save frame execution cycles */
     }
 
     .skills-column {
-        gap: 30px;
+        gap: 25px;
+    }
+
+    .skill-category-card {
+        padding: 20px;
     }
 }
