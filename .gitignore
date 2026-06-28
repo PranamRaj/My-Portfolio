@@ -21,3 +21,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+node_modules/
+*.local
+.firebaserc
+firebase.json
+.firebase/
+functions/

@@ -22,7 +22,7 @@ const Projects = () => {
         {
             id: 2,
             title: "Portfolio Website",
-            url: "http://localhost:5173/",
+            url: "https://myportfolio-cbcd1.web.app",
             techStack: { frontend: ['React', 'CSS'], backend: ['Node.js', 'Express'], database: ['MongoDB'] },
             description: "A personal portfolio website showcasing my projects and skills.",
             color: "#33ffe7"
