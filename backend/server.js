@@ -7,10 +7,27 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // --- MIDDLEWARE CONFIGURATION ---
-// Restricts access to your frontend origin safely to block external spam injections
+// 🚀 PRODUCTION FIX: Dynamic CORS array to allow both local testing and your live website
+const allowedOrigins = [
+    'http://localhost:5173',               // Local Vite Development environment
+    process.env.FRONTEND_URL              // Your live production website domain (e.g., from Vercel/Firebase)
+].filter(Boolean);                         // Removes undefined/empty environment values safely
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173'
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps, postman, or local testing tools)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Cross-Origin Request Blocked by Security Policies.'));
+        }
+    },
+    credentials: true,
+    optionsSuccessStatus: 200 // Handles older browsers (IE11) choking on 204 options responses
 }));
+
 app.use(express.json()); // Parses incoming json bodies safely
 
 // --- MAIL CONFIGURATION CONFIG ---
