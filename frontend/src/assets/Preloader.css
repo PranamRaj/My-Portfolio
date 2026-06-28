@@ -1,0 +1,238 @@
+.preloader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #030508;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* --- Matrix Code Rain Layer --- */
+.matrix-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.matrix-column {
+    position: absolute;
+    top: -50%;
+    display: flex;
+    flex-direction: column;
+    color: #00f2fe;
+    font-family: monospace;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* --- Terminal Content Layout --- */
+.loader-content {
+    position: relative;
+    text-align: center;
+    z-index: 2;
+}
+
+.loader-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+    color: #00f2fe;
+    position: relative;
+    text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+    /* Triggers the high-fidelity glitch loop */
+    animation: glitch-skew 1s infinite linear alternate-reverse;
+}
+
+.bracket {
+    color: rgba(255, 255, 255, 0.15);
+    text-shadow: none;
+}
+
+/* --- High-Fidelity RGB Glitch Core Layer --- */
+.loader-text::before,
+.loader-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #030508;
+}
+
+/* Red/Cyan offset shifting profiles */
+.loader-text::before {
+    left: 2px;
+    text-shadow: -2px 0 #ff0055;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim 5s infinite linear alternate-reverse;
+}
+
+.loader-text::after {
+    left: -2px;
+    text-shadow: -2px 0 #00f2fe, 0 2px #ff0055;
+    clip: rect(85px, 450px, 140px, 0);
+    animation: glitch-anim2 5s infinite linear alternate-reverse;
+}
+
+/* --- Loader Progress Bar --- */
+.loading-bar-wrapper {
+    width: 240px;
+    height: 2px;
+    background: rgba(0, 242, 254, 0.05);
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.15);
+}
+
+.loading-bar-progress {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #00f2fe, #a188f8);
+    position: absolute;
+    left: -100%;
+    animation: dynamic-load 2.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* --- Cyberpunk Keyframe Configurations --- */
+@keyframes dynamic-load {
+    0% {
+        left: -100%;
+    }
+
+    30% {
+        left: -50%;
+    }
+
+    70% {
+        left: -15%;
+    }
+
+    100% {
+        left: 0%;
+    }
+}
+
+@keyframes glitch-anim {
+    0% {
+        clip: rect(31px, 9999px, 94px, 0);
+    }
+
+    10% {
+        clip: rect(112px, 9999px, 76px, 0);
+    }
+
+    20% {
+        clip: rect(85px, 9999px, 5px, 0);
+    }
+
+    30% {
+        clip: rect(27px, 9999px, 115px, 0);
+    }
+
+    40% {
+        clip: rect(73px, 9999px, 29px, 0);
+    }
+
+    50% {
+        clip: rect(118px, 9999px, 142px, 0);
+    }
+
+    60% {
+        clip: rect(44px, 9999px, 50px, 0);
+    }
+
+    70% {
+        clip: rect(12px, 9999px, 85px, 0);
+    }
+
+    80% {
+        clip: rect(98px, 9999px, 13px, 0);
+    }
+
+    90% {
+        clip: rect(6px, 9999px, 67px, 0);
+    }
+
+    100% {
+        clip: rect(144px, 9999px, 102px, 0);
+    }
+}
+
+@keyframes glitch-anim2 {
+    0% {
+        clip: rect(76px, 9999px, 116px, 0);
+    }
+
+    11% {
+        clip: rect(43px, 9999px, 9px, 0);
+    }
+
+    22% {
+        clip: rect(122px, 9999px, 134px, 0);
+    }
+
+    33% {
+        clip: rect(9px, 9999px, 64px, 0);
+    }
+
+    44% {
+        clip: rect(87px, 9999px, 12px, 0);
+    }
+
+    55% {
+        clip: rect(31px, 9999px, 88px, 0);
+    }
+
+    66% {
+        clip: rect(140px, 9999px, 148px, 0);
+    }
+
+    77% {
+        clip: rect(3px, 9999px, 49px, 0);
+    }
+
+    88% {
+        clip: rect(77px, 9999px, 119px, 0);
+    }
+
+    100% {
+        clip: rect(18px, 9999px, 92px, 0);
+    }
+}
+
+@keyframes glitch-skew {
+
+    0%,
+    100% {
+        transform: skew(0deg);
+    }
+
+    20% {
+        transform: skew(4deg);
+    }
+
+    40% {
+        transform: skew(-3deg);
+    }
+
+    60% {
+        transform: skew(1deg);
+    }
+
+    80% {
+        transform: skew(-1deg);
+    }
+}

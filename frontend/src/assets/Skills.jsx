@@ -2,6 +2,9 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import brainImg from './images/brain.png';
 import './Skills.css';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 function Skills() {
     const canvasRef = useRef(null);
@@ -21,6 +24,7 @@ function Skills() {
 
         const activePulses = resumeSkills.map(() => ({ progress: 0, active: false }));
 
+        
         // Refined dynamic positioning function
         const syncCanvasLayout = () => {
             if (!containerRef.current || !canvas) return;
@@ -94,7 +98,56 @@ function Skills() {
         const animFrameId = requestAnimationFrame(renderLoop);
 
         // GSAP Timeline Sequence (One-by-One Data Stream)
-        const tl = gsap.timeline({ repeat: -1 });
+        const tl = gsap.timeline({
+            repeat: -1,
+            scrollTrigger: {
+                trigger: "#skills",
+                start: "top 75%",
+                end: "bottom 15%",
+                toggleActions: "play pause resume reset",
+                markers: false}}); 
+        gsap.fromTo(".skill-category-card",
+            {
+                opacity: 0,
+                y: 40,
+                scale: 0.95
+            },
+            {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                stagger: 0.15,
+                duration: 0.8,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: ".skills-wrapper",
+                    start: "top 80%",
+                    end: "bottom 20%",
+                    toggleActions: "play reverse play reverse" // Animates backward on scroll-up
+                }
+            }
+        );
+        gsap.fromTo(brainRef.current,
+            {
+                opacity: 0,
+                scale: 0.5,
+                filter: 'drop-shadow(0 0 0px rgba(0,0,0,0))'
+            },
+            {
+                opacity: 1,
+                scale: 1,
+                filter: 'drop-shadow(0 0 15px rgba(0, 242, 254, 0.2))',
+                duration: 1,
+                ease: "back.out(1.5)",
+                scrollTrigger: {
+                    trigger: ".skills-wrapper",
+                    start: "top 75%",
+                    end: "bottom 20%",
+                    toggleActions: "play reverse play reverse" // Animates backward on scroll-up
+                }
+            }
+        );
+  
         activePulses.forEach((pulse, index) => {
             const targetColor = resumeSkills[index].color;
             tl.to(pulse, {
@@ -124,12 +177,15 @@ function Skills() {
                 }
             }, "+=0.4");
         });
-
+        
         return () => {
             cancelAnimationFrame(animFrameId);
             window.removeEventListener('load', syncCanvasLayout);
             window.removeEventListener('resize', syncCanvasLayout);
             clearTimeout(backupTimeout);
+
+            // Kill everything to avoid memory leaks on page changes
+            ScrollTrigger.getAll().forEach(t => t.kill());
             tl.kill();
         };
     }, []);
