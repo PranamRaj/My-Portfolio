@@ -32,20 +32,25 @@ app.use(cors({
 app.use(express.json()); // Parses incoming json bodies safely
 
 // --- MAIL CONFIGURATION CONFIG ---
+// --- MAIL CONFIGURATION CONFIG ---
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
+    // 🚀 PRODUCTION CURE: Point directly to Google's physical IPv4 address cluster
+    // This stops Render from looking up or hitting the broken IPv6 route entirely!
+    host: '74.125.142.108',
     port: 465,
-    secure: true, // true for port 465
+    secure: true, // Mandatory true for port 465
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: process.env.EMAIL_USER, // Your full Gmail address
+        pass: process.env.EMAIL_PASS  // Your 16-character Google App Password
     },
-    // 🚀 THE CURE: Forces the underlying socket engine to pick IPv4 (A records) over IPv6 (AAAA records)
-    lookup: (hostname, options, callback) => {
-        options.family = 4; // Force IPv4 routing explicitly
-        return dns.lookup(hostname, options, callback);
+    // 🚀 CRITICAL FOR IP-BASED HOSTING: Tells the SSL engine we are talking to Gmail 
+    // so Google doesn't reject the connection due to an IP-vs-Domain name mismatch.
+    tls: {
+        servername: 'smtp.gmail.com',
+        rejectUnauthorized: false
     }
 });
+
 
 
 // --- SECURE MAIL TRANSMISSION ROUTE ---
