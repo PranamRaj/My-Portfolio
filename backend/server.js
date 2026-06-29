@@ -13,17 +13,7 @@ app.set('trust proxy', true);
 
 // --- 🚀 SECURITY LAYER 0: ENFORCE PRODUCTION HTTP HEADERS ---
 app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'none'"], 
-            connectSrc: ["'self'", "https://abstractapi.com", "https://resend.com"],
-            scriptSrc: ["'none'"],  
-            styleSrc: ["'none'"],    
-            imgSrc: ["'self'", "data:", "https://resend.com"],
-            frameAncestors: ["'none'"] 
-        },
-    },
-    referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
+    contentSecurityPolicy: false // Safe and correct for headless backends/APIs
 }));
 
 
