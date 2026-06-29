@@ -3,13 +3,13 @@ const { Resend } = require('resend');
 const cors = require('cors');
 const axios = require('axios');
 const rateLimit = require('express-rate-limit');
-const helmet = require('helmet'); 
+const helmet = require('helmet');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 // --- 🚀 SECURITY LAYER 0: ENFORCE PRODUCTION HTTP HEADERS ---
 app.use(helmet({
@@ -58,14 +58,16 @@ app.use((req, res, next) => {
 
 // --- 🚀 SECURITY LAYER 2: API SUBMISSION RATE LIMITER ---
 const contactFormLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // ⏳ 1 Hour window tracker parameters
-    max: 3,                   // 🛑 Limit each IP address to exactly 3 attempts per hour
+    windowMs: 60 * 60 * 1000,
+    max: 3,
     message: {
         error: 'Too many submission requests detected from your network origin. Please try again after an hour.'
     },
     standardHeaders: true,
     legacyHeaders: false,
+    validate: { trustProxy: false },
 });
+
 
 // --- 🚀 SECURITY SCANNER ROOT RESILIENCE ROUTE ---
 // Resolves Mozilla Observatory's 404 error by answering standard GET crawl probes with a clean 200 OK status
