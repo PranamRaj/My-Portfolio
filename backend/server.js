@@ -49,15 +49,16 @@ app.post('/api/contact', async (req, res) => {
         const verificationUrl = `https://abstractapi.com{process.env.ABSTRACT_API_KEY}&email=${email}`;
         const verificationResponse = await axios.get(verificationUrl);
 
+        // 🚀 THE CURE: Extract properties cleanly using flat structural parameters from Abstract API's JSON response
         const { is_valid_format, deliverability, is_disposable_email } = verificationResponse.data;
 
-        // Validation Check A: Verify basic string format syntax
-        if (!is_valid_format.value) {
+        // Validation Check A: Verify basic string format syntax (Flat boolean value)
+        if (!is_valid_format) {
             return res.status(400).json({ error: 'Please enter a valid email address format structure.' });
         }
 
-        // Validation Check B: Block popular automated temp/disposable email generation sites
-        if (is_disposable_email.value) {
+        // Validation Check B: Block popular automated temp/disposable email generation sites (Flat boolean value)
+        if (is_disposable_email) {
             return res.status(400).json({ error: 'Disposable or temporary email generators are fully blocked.' });
         }
 
