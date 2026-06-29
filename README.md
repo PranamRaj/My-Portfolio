@@ -1,47 +1,66 @@
-# 🚀 Full-Stack Neural Portfolio Ecosystem
+# 🚀 Premium Motion Portfolio & Secure Contact Ingestion Engine
 
-A high-performance, interactive full-stack portfolio ecosystem built using a decoupled architecture. The project implements a cyber-inspired terminal interface featuring data-stream canvas simulations, 3D interactive element parallax, and optimized horizontal scroll tracking.
+A high-performance, full-stack developer portfolio engineering showcase. This project pairs a fluid frontend user interface with a production-hardened REST API firewall layer to completely eliminate form spambots while maintaining fluid rendering pipelines.
 
----
-
-## 🔗 Live Links
-
-* **Live Website:** [https://myportfolio-cbcd1.web.app]
+🌐 **Live Production Frontend:** https://myportfolio-cbcd1.web.app
+⚡ **Secure Ingestion Backend:**  https://my-portfolio-m57m.onrender.com
 
 ---
 
-## 🛠️ Project Structure & Architecture
+## 🛠️ Core Technology Stack
 
-This project is built using a decoupled split-folder structure (**Monorepo Layout**) to isolate specific package ecosystems and optimize runtime efficiency:
+### Frontend Architecture
+- **React.js & Vite:** High-velocity build toolchain with modular, single-page client component trees.
+- **GSAP (GreenSock Animation Platform):** Multi-breakpoint desktop/mobile layout timelines, custom ticker scroll-trigger engines, and canvas particle network grids.
+- **CSS3 Variables:** Modern fluid typography, responsive floating-label tracking, and glassmorphic micro-interactions.
+
+### Backend Infrastructure
+- **Node.js & Express.js:** Fast, asynchronous REST API runtime environment.
+- **Resend SDK:** Transactional email delivery API communicating over secure HTTPS (Port 443).
+- **Abstract API Platform:** External microservice integration executing multi-factor syntax and deliverability scans.
+
+---
+
+## 🔒 Enterprise-Grade Security Architecture
+
+The full-stack pipeline incorporates a multi-tiered security perimeter, achieving excellent validation scores on **Mozilla Observatory web scans**:
+
+*   **🛡️ HTTP Security Hardening (Helmet):** Implements modern server-side response headers to permanently mitigate vulnerabilities like Clickjacking, MIME-sniffing, and Cross-Site Scripting (XSS).
+*   **📡 Strict CORS Boundary Verification:** Limits cross-origin data communication exclusively to verified development slots and the production live Firebase origin domain.
+*   **🛑 Dynamic IP Blacklist限制 Middleware:** Reads upstream headers through Render's proxy layer to evaluate requests against a custom blacklist string array managed in-memory via Render's environment variable panel.
+*   **⏱️ Request Velocity Rate-Limiting:** Employs `express-rate-limit` to restrict incoming connections to a maximum of **3 submission attempts per hour per IP**, neutralizing dynamic IP rotation spam scripts.
+*   **🪤 Multi-Factor Ingestion Validation:**
+    1.  *Honeypot Trap:* Captures automated scraper bots using an invisible, un-indexed input field that returns a fake `200 Success` status to trick scripts into abandoning loops.
+    2.  *Abstract Mailbox Check:* Rejects invalid strings and throws a `400 Bad Request` block if the mailbox is explicitly flagged as `UNDELIVERABLE`.
+    3.  *Server Length Sanitisation:* Rejects payloads if the name length is < 4 or > 25 characters, or if the message is < 10 characters, protecting server runtime bounds.
+
+---
+
+## 📂 Project Directory Structure
 
 ```text
-mypo/ (Project Root)
-├── frontend/     <-- React.js + Vite Application Layer
-└── backend/      <-- Node.js + Express API Server Layer
+├── backend/                  # Secure REST API runtime service
+│   ├── node_modules/         # Server-side environment dependencies
+│   ├── .env                  # Private system keys (Omitted from Git)
+│   ├── .gitignore            # Security exclusion parameters
+│   ├── package.json          # Production start scripts & package references
+│   └── server.js             # Core API entry point, firewalls, and mail pathways
+│
+└── frontend/                 # High-fidelity user interface client
+    ├── dist/                 # Optimized static web build bundle
+    ├── src/
+    │   ├── assets/           # CSS layout layers & visual assets
+    │   └── components/       # Canvas, About, Projects, & Contact.jsx
+    ├── firebase.json         # Strict CSP & hosting header configurations
+    └── vite.config.js        # Asset bundling parameters
 ```
 
 ---
 
-## ⚡ Tech Stack Breakdown
+## 📜 Collaborative Engineering Credits
 
-### Frontend (Client-Side)
-* **Framework:** React.js (Functional components, hooks, dynamic layout pipelines).
-* **Build Tool:** Vite (Ultra-fast HMR and optimized production bundling).
-* **Animation Core:** GSAP (GreenSock Animation Platform) & ScrollTrigger for high-performance timeline sequence controls.
-* **Canvas API:** Custom low-overhead HTML5 Canvas graphics render loops.
-* **Icons:** React Icons (`fi` Feather setup).
-
-### Backend (Server-Side)
-* **Runtime:** Node.js environment.
-* **Framework:** Express.js for routing and fast REST API production middleware layers.
-* **Security Control:** CORS (Cross-Origin Resource Sharing) middleware architecture.
+- **Designed, Built, and Maintained By:** Pranam Raj
+- **Motion Optimization & Security Hardening Support:** Google Gemini AI
 
 ---
-
-## ✨ Core Features & Motion Systems
-
-* **{ 404 user not found } Matrix Preloader:** An advanced cyberpunk terminal entry interface showcasing an automated cascading matrix binary rain simulation behind an RGB chromatic aberration glitching text array.
-* **Interactive 3D Image Nodes:** Responsive mouse-coordinate parallax mechanics built via React `useRef` directly manipulating the DOM style matrix layer for high FPS fluid feedback.
-* **Dynamic Connection Streams:** Live rendering loops drawing technical network node grids tracking viewport dimensions to stream dynamic particle packets into a centralized core node.
-* **Smart Navigation Header:** Auto-hiding header layout powered by a scroll-direction parsing engine. Automatically pulls up on downward scroll and seamlessly reveals upon upward scrolls with a strict 2-second timeout hiding window.
-* **Horizontal Project Showcase:** A custom pinned viewport section that tracks user vertical scroll gestures and converts them into horizontal card translation matrices, featuring smooth entry revealing timelines.
+*Developed as a high-performance, modular architectural case study. Code architecture complies with production web security and data routing standards.*
