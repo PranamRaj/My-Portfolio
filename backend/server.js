@@ -11,18 +11,21 @@ const PORT = process.env.PORT || 5000;
 
 app.set('trust proxy', true);
 
+// --- 🚀 SECURITY LAYER 0: ENFORCE PRODUCTION HTTP HEADERS ---
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
-            defaultSrc: ["'self'"],
+            defaultSrc: ["'none'"], 
             connectSrc: ["'self'", "https://abstractapi.com", "https://resend.com"],
-            scriptSrc: ["'self'", "'unsafe-inline'"],
-            styleSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'none'"],  
+            styleSrc: ["'none'"],    
             imgSrc: ["'self'", "data:", "https://resend.com"],
+            frameAncestors: ["'none'"] 
         },
     },
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
 }));
+
 
 // --- RESEND EMAIL UTILITY INITIALISATION ---
 const resend = new Resend(process.env.RESEND_API_KEY);
