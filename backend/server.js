@@ -1,14 +1,15 @@
 const express = require('express');
 const { Resend } = require('resend');
 const cors = require('cors');
-const axios = require('axios'); // 🚀 Secure HTTPS network connection tool
+const axios = require('axios');
+const rateLimit = require('express-rate-limit'); // 🚀 IMPORT RATE LIMITER
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 🚀 MANDATORY FOR RENDER: Instructs Express to trust the proxy layer 
-// so user IP address mapping calculations match up accurately.
+// 🚀 CRITICAL FOR RENDER: Instructs Express to trust the proxy network layer
+// This forces express-rate-limit to read the user's real public IP address.
 app.set('trust proxy', true);
 
 // --- RESEND CONFIGURATION ---
@@ -35,39 +36,46 @@ app.use(cors({
 
 app.use(express.json());
 
-// --- GLOBAL IP FIREWALL BLACKLIST MIDDLEWARE ---
-// 🚀 DYNAMIC CURE: Unpacks your comma-separated string variables straight out of environment memory!
+// --- 🚀 SECURITY LAYER 1: GLOBAL IP FIREWALL BLACKLIST ---
 app.use((req, res, next) => {
-    
     const visitorIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-
-    // Read string from env, default to empty string if not set, and split into an active array
     const rawBannedIPs = process.env.BANNED_IPS || '';
     const bannedIPsArray = rawBannedIPs.split(',').map(ip => ip.trim()).filter(Boolean);
 
-    // If the visitor matches your blacklist memory filters, boot them instantly!
     if (bannedIPsArray.includes(visitorIP)) {
         console.warn(`🛑 SECURITY BLOCK: Terminated request from blacklisted IP: ${visitorIP}`);
         return res.status(403).json({
-            error: 'Access Denied. Your IP address has been permanently blacklisted due to security policy violations.'
+            error: 'Access Denied. Your IP address has been permanently blacklisted.'
         });
     }
-
     next();
 });
 
+// --- 🚀 SECURITY LAYER 2: SPEED LIMITER CONFIGURATION ---
+const contactFormLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // ⏳ 1 Hour tracking window
+    max: 3,                   // 🛑 Limit each IP address to exactly 3 attempts per hour
+    message: {
+        error: 'Too many submission requests detected from your network origin. Please try again after an hour.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 // --- SECURE MAIL TRANSMISSION ROUTE ---
-app.post('/api/contact', async (req, res) => {
+// 🚀 Apply the speed limiter middleware specifically to protect this route
+app.post('/api/contact', contactFormLimiter, async (req, res) => {
+    // 🪤 Unpack 'nickname' field used for the invisible honeypot trap
     const { name, email, message, nickname } = req.body;
 
-    // 🛑 THE HONEYPOT TRIGGER: If this hidden field has text inside it, it's a spambot!
+    // --- 🚀 SECURITY LAYER 3: THE HONEYPOT TRAP ---
     if (nickname) {
-        console.warn(`🤖 BOT TRAPPED: Silently dropped automated spam submission from payload.`);
-
-        // Return a fake 200 success response. The bot leaves, but your email code never runs!
+        console.warn(`🤖 BOT TRAPPED: Silently dropped automated spam submission.`);
+        // Trick the bot by returning a fake 200 success code
         return res.status(200).json({ success: 'Message dispatched securely!' });
     }
-    // 1. Initial sanitization length validation bounds check
+
+    // 1. Initial input length sanitization check
     if (!name || !email || !message) {
         return res.status(400).json({ error: 'All fields are strictly required.' });
     }
@@ -80,7 +88,6 @@ app.post('/api/contact', async (req, res) => {
         return res.status(400).json({ error: 'Please enter a more descriptive message (minimum 10 characters).' });
     }
 
-    // Stable regex fallback structure 
     const fallbackRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     try {
@@ -88,43 +95,35 @@ app.post('/api/contact', async (req, res) => {
         const verificationUrl = `https://abstractapi.com{process.env.ABSTRACT_API_KEY}&email=${email}`;
         const verificationResponse = await axios.get(verificationUrl);
 
-        // Destructure the flat keys directly from Abstract API's JSON response root
         const { is_valid_format, is_disposable_email, deliverability } = verificationResponse.data;
 
-        // Validation Check A: Verify format syntax flag
         if (is_valid_format === false) {
             return res.status(400).json({ error: 'Please enter a valid email address format structure.' });
         }
 
-        // Validation Check B: Block throwaway temporary spam mail accounts
         if (is_disposable_email === true) {
             return res.status(400).json({ error: 'Disposable or temporary email generators are fully blocked.' });
         }
 
-        // Validation Check C: Mailbox existence verification check
         if (deliverability === 'UNDELIVERABLE') {
             return res.status(400).json({ error: 'This email account does not exist. Please enter a real email.' });
         }
 
     } catch (apiErr) {
-        // CRITICAL RESILIENCE FALLBACK: If your Abstract API 500 free monthly quota limits run out,
-        // your server bypasses the block, relies on the backup syntax check, and delivers the message anyway!
-        console.warn('Abstract API threshold or network issue. Executing regex backup validation layer:', apiErr.message);
-
+        console.warn('Abstract API threshold reached. Executing regex backup validation layer:', apiErr.message);
         if (!fallbackRegex.test(email)) {
             return res.status(400).json({ error: 'Please enter a valid email address format structure.' });
         }
     }
 
-    // 3. Capture visitor IP address safely after all checkpoints pass successfully
     const viewerIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
     try {
-        // 4. Secure Mail dispatch template execution via Resend
+        // 3. Secure Mail dispatch template execution via Resend
         const { data, error } = await resend.emails.send({
-            from: 'Portfolio Contact <onboarding@resend.dev>', // Free tier Resend sender domain
-            to: process.env.EMAIL_USER,                       // Your personal receiving Gmail inbox address
-            replyTo: email,                                   // Direct replies route cleanly back to your visitor
+            from: 'Portfolio Contact <onboarding@resend.dev>',
+            to: process.env.EMAIL_USER,
+            replyTo: email,
             subject: `New Portfolio Message from ${name}`,
             html: `
                 <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f7; color: #333;">
@@ -136,9 +135,6 @@ app.post('/api/contact', async (req, res) => {
                         <div style="background-color: #f9fafb; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; font-style: italic;">
                             "${message.replace(/\n/g, '<br>')}"
                         </div>
-                        <p style="font-size: 12px; color: #9ca3af; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 15px;">
-                            Sent securely from your portfolio ingestion Resend HTTPS API with Abstract validation.
-                        </p>
                     </div>
                 </div>
             `
@@ -158,5 +154,5 @@ app.post('/api/contact', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Portfolio API engine actively operating on port ${PORT} with Resend & Abstract API`);
+    console.log(`Portfolio API engine operating smoothly on port ${PORT} with Resend & Security Shields`);
 });
