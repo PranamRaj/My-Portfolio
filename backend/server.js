@@ -2,20 +2,32 @@ const express = require('express');
 const { Resend } = require('resend');
 const cors = require('cors');
 const axios = require('axios');
-const rateLimit = require('express-rate-limit'); // 🚀 IMPORT RATE LIMITER
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet'); 
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 🚀 CRITICAL FOR RENDER: Instructs Express to trust the proxy network layer
-// This forces express-rate-limit to read the user's real public IP address.
 app.set('trust proxy', true);
 
-// --- RESEND CONFIGURATION ---
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            connectSrc: ["'self'", "https://abstractapi.com", "https://resend.com"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", "data:", "https://resend.com"],
+        },
+    },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
+}));
+
+// --- RESEND EMAIL UTILITY INITIALISATION ---
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// --- MIDDLEWARE CONFIGURATION ---
+// --- MIDDLEWARE OVERRIDE CONFIGURATION ---
 const allowedOrigins = [
     'http://localhost:5173',
     process.env.FRONTEND_URL
@@ -36,7 +48,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// --- 🚀 SECURITY LAYER 1: GLOBAL IP FIREWALL BLACKLIST ---
+// --- 🚀 SECURITY LAYER 1: GLOBAL ENVIRONMENT IP FIREWALL ---
 app.use((req, res, next) => {
     const visitorIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const rawBannedIPs = process.env.BANNED_IPS || '';
@@ -45,15 +57,15 @@ app.use((req, res, next) => {
     if (bannedIPsArray.includes(visitorIP)) {
         console.warn(`🛑 SECURITY BLOCK: Terminated request from blacklisted IP: ${visitorIP}`);
         return res.status(403).json({
-            error: 'Access Denied. Your IP address has been permanently blacklisted.'
+            error: 'Access Denied. Your IP address has been permanently blacklisted due to security policy violations.'
         });
     }
     next();
 });
 
-// --- 🚀 SECURITY LAYER 2: SPEED LIMITER CONFIGURATION ---
+// --- 🚀 SECURITY LAYER 2: API SUBMISSION RATE LIMITER ---
 const contactFormLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // ⏳ 1 Hour tracking window
+    windowMs: 60 * 60 * 1000, // ⏳ 1 Hour window tracker parameters
     max: 3,                   // 🛑 Limit each IP address to exactly 3 attempts per hour
     message: {
         error: 'Too many submission requests detected from your network origin. Please try again after an hour.'
@@ -62,20 +74,29 @@ const contactFormLimiter = rateLimit({
     legacyHeaders: false,
 });
 
+// --- 🚀 SECURITY SCANNER ROOT RESILIENCE ROUTE ---
+// Resolves Mozilla Observatory's 404 error by answering standard GET crawl probes with a clean 200 OK status
+app.get('/', (req, res) => {
+    res.status(200).json({
+        status: 'Online',
+        message: 'Portfolio secure API infrastructure engine is actively running.'
+    });
+});
+
 // --- SECURE MAIL TRANSMISSION ROUTE ---
-// 🚀 Apply the speed limiter middleware specifically to protect this route
+// Targets endpoint action for frontend contact form submission handles
 app.post('/api/contact', contactFormLimiter, async (req, res) => {
-    // 🪤 Unpack 'nickname' field used for the invisible honeypot trap
+    // Unpack 'nickname' used for the invisible spambot honeypot trap
     const { name, email, message, nickname } = req.body;
 
     // --- 🚀 SECURITY LAYER 3: THE HONEYPOT TRAP ---
     if (nickname) {
         console.warn(`🤖 BOT TRAPPED: Silently dropped automated spam submission.`);
-        // Trick the bot by returning a fake 200 success code
+        // Fool the automated script with a fake 200 success code so it abandons the loop
         return res.status(200).json({ success: 'Message dispatched securely!' });
     }
 
-    // 1. Initial input length sanitization check
+    // 1. Initial manual payload structure data validation checkpoints
     if (!name || !email || !message) {
         return res.status(400).json({ error: 'All fields are strictly required.' });
     }
@@ -92,7 +113,7 @@ app.post('/api/contact', contactFormLimiter, async (req, res) => {
 
     try {
         // 2. Outsource validation parameters to Abstract API over secure HTTPS
-        const verificationUrl = `https://abstractapi.com{process.env.ABSTRACT_API_KEY}&email=${email}`;
+        const verificationUrl = `https://abstractapi.com/v1/?api_key=${process.env.ABSTRACT_API_KEY}&email=${email}`;
         const verificationResponse = await axios.get(verificationUrl);
 
         const { is_valid_format, is_disposable_email, deliverability } = verificationResponse.data;
@@ -119,7 +140,7 @@ app.post('/api/contact', contactFormLimiter, async (req, res) => {
     const viewerIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
     try {
-        // 3. Secure Mail dispatch template execution via Resend
+        // 3. Dispatch confirmed verified payload parameters directly to your inbox via Resend
         const { data, error } = await resend.emails.send({
             from: 'Portfolio Contact <onboarding@resend.dev>',
             to: process.env.EMAIL_USER,
@@ -135,6 +156,9 @@ app.post('/api/contact', contactFormLimiter, async (req, res) => {
                         <div style="background-color: #f9fafb; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; font-style: italic;">
                             "${message.replace(/\n/g, '<br>')}"
                         </div>
+                        <p style="font-size: 12px; color: #9ca3af; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 15px;">
+                            Sent securely from your portfolio ingestion Resend HTTPS API with Abstract validation.
+                        </p>
                     </div>
                 </div>
             `
