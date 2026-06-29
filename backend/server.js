@@ -38,6 +38,7 @@ app.use(express.json());
 // --- GLOBAL IP FIREWALL BLACKLIST MIDDLEWARE ---
 // 🚀 DYNAMIC CURE: Unpacks your comma-separated string variables straight out of environment memory!
 app.use((req, res, next) => {
+    
     const visitorIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
     // Read string from env, default to empty string if not set, and split into an active array
@@ -57,8 +58,15 @@ app.use((req, res, next) => {
 
 // --- SECURE MAIL TRANSMISSION ROUTE ---
 app.post('/api/contact', async (req, res) => {
-    const { name, email, message } = req.body;
+    const { name, email, message, nickname } = req.body;
 
+    // 🛑 THE HONEYPOT TRIGGER: If this hidden field has text inside it, it's a spambot!
+    if (nickname) {
+        console.warn(`🤖 BOT TRAPPED: Silently dropped automated spam submission from payload.`);
+
+        // Return a fake 200 success response. The bot leaves, but your email code never runs!
+        return res.status(200).json({ success: 'Message dispatched securely!' });
+    }
     // 1. Initial sanitization length validation bounds check
     if (!name || !email || !message) {
         return res.status(400).json({ error: 'All fields are strictly required.' });

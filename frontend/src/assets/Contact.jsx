@@ -8,6 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 function Contact() {
     const sectionRef = useRef(null);
+    const [honeypot, setHoneypot] = useState('');
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
     // 🚀 CUSTOM MODAL STATE MANAGEMENT
@@ -62,7 +63,10 @@ function Contact() {
             const response = await fetch('https://my-portfolio-m57m.onrender.com/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({
+                    ...formData,
+                    nickname: honeypot 
+                })
             });
 
             const result = await response.json();
@@ -125,6 +129,17 @@ function Contact() {
                 <div className="contact-right">
                     <form className="contact-form" onSubmit={handleSubmit}>
                         <div className="input-group">
+                            <div style={{ display: 'none' }} aria-hidden="true">
+                                <input
+                                    type="text"
+                                    name="nickname"
+                                    value={honeypot}
+                                    onChange={(e) => setHoneypot(e.target.value)}
+                                    tabIndex="-1"
+                                    autoComplete="off"
+                                />
+                            </div>
+
                             <input
                                 type="text"
                                 name="name"
