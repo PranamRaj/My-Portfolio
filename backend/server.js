@@ -23,7 +23,8 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // --- MIDDLEWARE OVERRIDE CONFIGURATION ---
 const allowedOrigins = [
     'http://localhost:5173',
-    process.env.FRONTEND_URL
+    process.env.FRONTEND_URL,
+    'myportfolio-cbcd1'
 ].filter(Boolean);
 
 app.use(cors({
