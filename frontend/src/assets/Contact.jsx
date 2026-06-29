@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import CustomAlert from './CustomAlert'; // 🚀 Import your new alert box
 import './Contact.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -8,6 +9,10 @@ gsap.registerPlugin(ScrollTrigger);
 function Contact() {
     const sectionRef = useRef(null);
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+
+    // 🚀 CUSTOM MODAL STATE MANAGEMENT
+    const [isSending, setIsSending] = useState(false);
+    const [alertConfig, setAlertConfig] = useState({ isOpen: false, message: '', type: 'success' });
 
     useEffect(() => {
         const section = sectionRef.current;
@@ -51,9 +56,10 @@ function Contact() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSending(true);
 
         try {
-            const response = await fetch('https://my-portfolio-m57m.onrender.com/api/contact', {
+            const response = await fetch('https://onrender.com', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -62,14 +68,31 @@ function Contact() {
             const result = await response.json();
 
             if (response.ok) {
-                alert('Success! Message transmitted securely.');
+                // 🚀 Open custom alert popup with success message
+                setAlertConfig({
+                    isOpen: true,
+                    message: 'Success! Your message has been safely delivered straight to my inbox.',
+                    type: 'success'
+                });
                 setFormData({ name: '', email: '', message: '' }); // Wipes fields clean
             } else {
-                alert(`Error: ${result.error}`);
+                // 🚀 Open custom alert popup with server-side validation error
+                setAlertConfig({
+                    isOpen: true,
+                    message: result.error || 'Something went wrong.',
+                    type: 'error'
+                });
             }
         } catch (err) {
             console.error('API Context error:', err);
-            alert('Server is currently dormant or sleeping. Please check your console runtime log parameters.');
+            // 🚀 Open custom alert popup if server is down/sleeping
+            setAlertConfig({
+                isOpen: true,
+                message: 'Your backend server is waking up from its dormant sleep cycle. Please wait 30 seconds and click Send again.',
+                type: 'error'
+            });
+        } finally {
+            setIsSending(false);
         }
     };
 
@@ -82,7 +105,7 @@ function Contact() {
                     <h5 className="section-tag">CONTACT ME</h5>
                     <h2 className="section-heading">Let's Build Something Exceptional Together.</h2>
                     <p className="contact-text">
-                        I am always looking to team up on interesting projects, solve coding puzzles, or learn something new. 
+                        I am always looking to team up on interesting projects, solve coding puzzles, or learn something new.
                         Feel free to reach out and drop a message!
                     </p>
 
@@ -105,8 +128,8 @@ function Contact() {
                             <input
                                 type="text"
                                 name="name"
-                                min="4"
-                                max="25"
+                                minLength={4}
+                                maxLength={25}
                                 required
                                 value={formData.name}
                                 onChange={handleChange}
@@ -142,18 +165,27 @@ function Contact() {
                             <div className="input-line"></div>
                         </div>
 
-                        <button type="submit" className="submit-btn">
-                            <span>Send Message</span>
-                            <svg viewBox="0 0 24 24" fill="none" className="arrow-icon">
-                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
+                        <button type="submit" className="submit-btn" disabled={isSending}>
+                            <span>{isSending ? "Processing..." : "Send Message"}</span>
+                            {!isSending && (
+                                <svg viewBox="0 0 24 24" fill="none" className="arrow-icon">
+                                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            )}
                         </button>
                     </form>
                 </div>
 
             </div>
+
+            {/* 🚀 THE CUSTOM THEME ALERT MODAL POPUP */}
+            <CustomAlert
+                isOpen={alertConfig.isOpen}
+                message={alertConfig.message}
+                type={alertConfig.type}
+                onClose={() => setAlertConfig({ ...alertConfig, isOpen: false })}
+            />
         </section>
-        
     );
 }
 

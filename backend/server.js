@@ -36,43 +36,63 @@ app.use(cors({
 app.use(express.json());
 
 // --- SECURE MAIL TRANSMISSION ROUTE ---
-// --- SECURE MAIL TRANSMISSION ROUTE ---
 app.post('/api/contact', async (req, res) => {
     const { name, email, message } = req.body;
 
-    // 1. Initial sanitization empty payload check
+    // 1. Initial sanitization length validation bounds check
     if (!name || !email || !message) {
         return res.status(400).json({ error: 'All fields are strictly required.' });
     }
 
+    if (name.trim().length < 4 || name.length > 25) {
+        return res.status(400).json({ error: 'Name must be between 4 and 25 characters long.' });
+    }
+
+    if (message.trim().length < 10) {
+        return res.status(400).json({ error: 'Please enter a more descriptive message (minimum 10 characters).' });
+    }
+
+    // Stable regex fallback structure 
+    const fallbackRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
     try {
-        // 2. Outsource validation payload to Abstract API over secure HTTPS
+        // 2. Outsource validation parameters to Abstract API over secure HTTPS
         const verificationUrl = `https://abstractapi.com{process.env.ABSTRACT_API_KEY}&email=${email}`;
         const verificationResponse = await axios.get(verificationUrl);
 
-        // 🚀 THE FINAL PRODUCTION CURE: Abstract API nests the actual boolean evaluation flags 
-        // inside child objects called `.value`. We extract the parent objects here safely.
+        // 🚀 THE CURE: Destructure the flat keys directly from Abstract API's JSON response root
         const { is_valid_format, is_disposable_email, deliverability } = verificationResponse.data;
 
-        // Validation Check A: Verify basic string layout formatting syntax (.value returns true/false)
-        if (!is_valid_format || is_valid_format.value === false) {
+        // Validation Check A: Verify format syntax flag
+        if (is_valid_format === false) {
             return res.status(400).json({ error: 'Please enter a valid email address format structure.' });
         }
 
-        // Validation Check B: Block automated throwaway temp-mail generators (.value returns true/false)
-        if (is_disposable_email && is_disposable_email.value === true) {
+        // Validation Check B: Block throwaway temporary spam mail accounts
+        if (is_disposable_email === true) {
             return res.status(400).json({ error: 'Disposable or temporary email generators are fully blocked.' });
         }
 
-        // Validation Check C: REAL EXISTENCE CHECK (Free Tier Safe Check)
-        // Since free keys default to "UNKNOWN", we only block if the status is explicitly "UNDELIVERABLE"
+        // Validation Check C: Mailbox existence verification check
+        // Free keys default to "UNKNOWN" on webmails, so we ONLY block if explicitly tagged "UNDELIVERABLE"
         if (deliverability === 'UNDELIVERABLE') {
             return res.status(400).json({ error: 'This email account does not exist. Please enter a real email.' });
         }
 
-        // 3. Capture visitor IP address safely after verification passes successfully
-        const viewerIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    } catch (apiErr) {
+        // 🚀 CRITICAL RESILIENCE FALLBACK: If your Abstract API 500 free monthly quota limits run out,
+        // your server bypasses the block, relies on the backup syntax check, and delivers the message anyway!
+        console.warn('Abstract API threshold or network issue. Executing regex backup validation layer:', apiErr.message);
 
+        if (!fallbackRegex.test(email)) {
+            return res.status(400).json({ error: 'Please enter a valid email address format structure.' });
+        }
+    }
+
+    // 3. Capture visitor IP address safely after all checkpoints pass successfully
+    const viewerIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+    try {
         // 4. Secure Mail dispatch template execution via Resend
         const { data, error } = await resend.emails.send({
             from: 'Portfolio Contact <onboarding@resend.dev>', // Free tier Resend sender domain
@@ -90,7 +110,7 @@ app.post('/api/contact', async (req, res) => {
                             "${message.replace(/\n/g, '<br>')}"
                         </div>
                         <p style="font-size: 12px; color: #9ca3af; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 15px;">
-                            Sent securely from your portfolio ingestion Resend HTTPS API with Abstract verification.
+                            Sent securely from your portfolio ingestion Resend HTTPS API with Abstract validation.
                         </p>
                     </div>
                 </div>
@@ -105,8 +125,8 @@ app.post('/api/contact', async (req, res) => {
         return res.status(200).json({ success: 'Message dispatched securely!' });
 
     } catch (err) {
-        console.error('Core backend pipeline crash details:', err.message);
-        return res.status(500).json({ error: 'Internal server error processing transmission validation.' });
+        console.error('Mail service delivery error details:', err.message);
+        return res.status(500).json({ error: 'Internal server error processing mail transmission.' });
     }
 });
 
