@@ -21,24 +21,30 @@ app.use(helmet({
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // --- MIDDLEWARE OVERRIDE CONFIGURATION ---
-const allowedOrigins = [
-    'http://localhost:5173',
-    process.env.FRONTEND_URL,
+const allowedTokens = [
+    'localhost:5173',
     'myportfolio-cbcd1'
-].filter(Boolean);
+];
 
 app.use(cors({
     origin: function (origin, callback) {
+        // Allow requests with no origin header (like automated system sweeps or tools)
         if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1) {
+
+        // 🚀 Dynamic Check: Verifies if the incoming browser domain contains any of our whitelisted tokens
+        const isAllowed = allowedTokens.some(token => origin.toLowerCase().includes(token.toLowerCase()));
+
+        if (isAllowed) {
             callback(null, true);
         } else {
+            console.error(`🛑 CORS REGISTRATION BLOCK: Blocked connection coming from: ${origin}`);
             callback(new Error('Cross-Origin Request Blocked by Security Policies.'));
         }
     },
     credentials: true,
     optionsSuccessStatus: 200
 }));
+
 
 app.use(express.json());
 
