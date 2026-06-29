@@ -105,6 +105,8 @@ function Contact() {
                             <input
                                 type="text"
                                 name="name"
+                                min="4"
+                                max="25"
                                 required
                                 value={formData.name}
                                 onChange={handleChange}
