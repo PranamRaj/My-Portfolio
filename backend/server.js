@@ -35,6 +35,26 @@ app.use(cors({
 
 app.use(express.json());
 
+// --- GLOBAL IP FIREWALL BLACKLIST MIDDLEWARE ---
+// 🚀 DYNAMIC CURE: Unpacks your comma-separated string variables straight out of environment memory!
+app.use((req, res, next) => {
+    const visitorIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+    // Read string from env, default to empty string if not set, and split into an active array
+    const rawBannedIPs = process.env.BANNED_IPS || '';
+    const bannedIPsArray = rawBannedIPs.split(',').map(ip => ip.trim()).filter(Boolean);
+
+    // If the visitor matches your blacklist memory filters, boot them instantly!
+    if (bannedIPsArray.includes(visitorIP)) {
+        console.warn(`🛑 SECURITY BLOCK: Terminated request from blacklisted IP: ${visitorIP}`);
+        return res.status(403).json({
+            error: 'Access Denied. Your IP address has been permanently blacklisted due to security policy violations.'
+        });
+    }
+
+    next();
+});
+
 // --- SECURE MAIL TRANSMISSION ROUTE ---
 app.post('/api/contact', async (req, res) => {
     const { name, email, message } = req.body;
@@ -60,7 +80,7 @@ app.post('/api/contact', async (req, res) => {
         const verificationUrl = `https://abstractapi.com{process.env.ABSTRACT_API_KEY}&email=${email}`;
         const verificationResponse = await axios.get(verificationUrl);
 
-        // 🚀 THE CURE: Destructure the flat keys directly from Abstract API's JSON response root
+        // Destructure the flat keys directly from Abstract API's JSON response root
         const { is_valid_format, is_disposable_email, deliverability } = verificationResponse.data;
 
         // Validation Check A: Verify format syntax flag
@@ -74,13 +94,12 @@ app.post('/api/contact', async (req, res) => {
         }
 
         // Validation Check C: Mailbox existence verification check
-        // Free keys default to "UNKNOWN" on webmails, so we ONLY block if explicitly tagged "UNDELIVERABLE"
         if (deliverability === 'UNDELIVERABLE') {
             return res.status(400).json({ error: 'This email account does not exist. Please enter a real email.' });
         }
 
     } catch (apiErr) {
-        // 🚀 CRITICAL RESILIENCE FALLBACK: If your Abstract API 500 free monthly quota limits run out,
+        // CRITICAL RESILIENCE FALLBACK: If your Abstract API 500 free monthly quota limits run out,
         // your server bypasses the block, relies on the backup syntax check, and delivers the message anyway!
         console.warn('Abstract API threshold or network issue. Executing regex backup validation layer:', apiErr.message);
 
@@ -129,7 +148,6 @@ app.post('/api/contact', async (req, res) => {
         return res.status(500).json({ error: 'Internal server error processing mail transmission.' });
     }
 });
-
 
 app.listen(PORT, () => {
     console.log(`Portfolio API engine actively operating on port ${PORT} with Resend & Abstract API`);
