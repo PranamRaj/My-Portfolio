@@ -36,6 +36,7 @@ app.use(cors({
 app.use(express.json());
 
 // --- SECURE MAIL TRANSMISSION ROUTE ---
+// --- SECURE MAIL TRANSMISSION ROUTE ---
 app.post('/api/contact', async (req, res) => {
     const { name, email, message } = req.body;
 
@@ -45,36 +46,37 @@ app.post('/api/contact', async (req, res) => {
     }
 
     try {
-        // 🚀 2. DEEP VERIFICATION ENGINE: Outsource mailbox verification to Abstract API over secure HTTPS
+        // 2. Outsource validation payload to Abstract API over secure HTTPS
         const verificationUrl = `https://abstractapi.com{process.env.ABSTRACT_API_KEY}&email=${email}`;
         const verificationResponse = await axios.get(verificationUrl);
 
-        // 🚀 THE CURE: Extract properties cleanly using flat structural parameters from Abstract API's JSON response
-        const { is_valid_format, deliverability, is_disposable_email } = verificationResponse.data;
+        // 🚀 THE FINAL PRODUCTION CURE: Abstract API nests the actual boolean evaluation flags 
+        // inside child objects called `.value`. We extract the parent objects here safely.
+        const { is_valid_format, is_disposable_email, deliverability } = verificationResponse.data;
 
-        // Validation Check A: Verify basic string format syntax (Flat boolean value)
-        if (!is_valid_format) {
+        // Validation Check A: Verify basic string layout formatting syntax (.value returns true/false)
+        if (!is_valid_format || is_valid_format.value === false) {
             return res.status(400).json({ error: 'Please enter a valid email address format structure.' });
         }
 
-        // Validation Check B: Block popular automated temp/disposable email generation sites (Flat boolean value)
-        if (is_disposable_email) {
+        // Validation Check B: Block automated throwaway temp-mail generators (.value returns true/false)
+        if (is_disposable_email && is_disposable_email.value === true) {
             return res.status(400).json({ error: 'Disposable or temporary email generators are fully blocked.' });
         }
 
-        // Validation Check C: MAILBOX EXISTENCE CHECK
-        // Triggers an instant handshake loop. If "UNDELIVERABLE", the mailbox does not exist (e.g., pranam1111@gmail.com)
+        // Validation Check C: REAL EXISTENCE CHECK (Free Tier Safe Check)
+        // Since free keys default to "UNKNOWN", we only block if the status is explicitly "UNDELIVERABLE"
         if (deliverability === 'UNDELIVERABLE') {
             return res.status(400).json({ error: 'This email account does not exist. Please enter a real email.' });
         }
 
-        // 3. Capture visitor IP address safely after validation passes
+        // 3. Capture visitor IP address safely after verification passes successfully
         const viewerIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
-        // 4. Secure Mail dispatch template via Resend
+        // 4. Secure Mail dispatch template execution via Resend
         const { data, error } = await resend.emails.send({
-            from: 'Portfolio Contact <onboarding@resend.dev>', // Keep default Resend domain for free accounts
-            to: process.env.EMAIL_USER,                       // Your personal receiving Gmail address
+            from: 'Portfolio Contact <onboarding@resend.dev>', // Free tier Resend sender domain
+            to: process.env.EMAIL_USER,                       // Your personal receiving Gmail inbox address
             replyTo: email,                                   // Direct replies route cleanly back to your visitor
             subject: `New Portfolio Message from ${name}`,
             html: `
@@ -88,7 +90,7 @@ app.post('/api/contact', async (req, res) => {
                             "${message.replace(/\n/g, '<br>')}"
                         </div>
                         <p style="font-size: 12px; color: #9ca3af; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 15px;">
-                            Sent securely from your portfolio ingestion Resend HTTPS API with Abstract validation.
+                            Sent securely from your portfolio ingestion Resend HTTPS API with Abstract verification.
                         </p>
                     </div>
                 </div>
@@ -107,6 +109,7 @@ app.post('/api/contact', async (req, res) => {
         return res.status(500).json({ error: 'Internal server error processing transmission validation.' });
     }
 });
+
 
 app.listen(PORT, () => {
     console.log(`Portfolio API engine actively operating on port ${PORT} with Resend & Abstract API`);
