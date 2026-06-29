@@ -4,6 +4,8 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+app.set('trust proxy', true);
+
 const PORT = process.env.PORT || 5000;
 
 // --- RESEND CONFIGURATION ---
@@ -39,12 +41,14 @@ app.post('/api/contact', async (req, res) => {
         return res.status(400).json({ error: 'All fields are strictly required.' });
     }
 
+    // 🚀 THE FIX: Read the forwarded IP address header from Render, or fallback to connection info
+    const viewerIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
     try {
-        // 🚀 FIRES VIA PORT 443 HTTPS - Completely circumvents Render's SMTP blocks!
         const { data, error } = await resend.emails.send({
-            from: 'Portfolio Contact <onboarding@resend.dev>', // ✅ Default Resend sender for free tier
-            to: process.env.EMAIL_USER,                       // ✅ Your actual personal receiving Gmail address
-            replyTo: email,                                   // Direct replies route back to the visitor
+            from: 'Portfolio Contact <onboarding@resend.dev>',
+            to: process.env.EMAIL_USER,
+            replyTo: email,
             subject: `New Portfolio Message from ${name}`,
             html: `
                 <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f7; color: #333;">
@@ -52,6 +56,8 @@ app.post('/api/contact', async (req, res) => {
                         <h2 style="color: #3b82f6; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; margin-top:0;">Portfolio Transmission Received</h2>
                         <p style="margin: 15px 0;"><strong>Sender Name:</strong> ${name}</p>
                         <p style="margin: 15px 0;"><strong>Sender Email:</strong> <a href="mailto:${email}">${email}</a></p>
+                        <!-- 🚀 IP DISPLAY ACCENT: Appends the network origin straight into your email -->
+                        <p style="margin: 15px 0;"><strong>Viewer IP Address:</strong> <span style="font-family: monospace; background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">${viewerIP}</span></p>
                         <div style="background-color: #f9fafb; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; font-style: italic;">
                             "${message.replace(/\n/g, '<br>')}"
                         </div>
@@ -65,13 +71,13 @@ app.post('/api/contact', async (req, res) => {
 
         if (error) {
             console.error('Resend Internal API Error:', error);
-            return res.status(500).json({ error: 'Failed to dispatch message via API.' });
+            return res.status(500).json({ error: 'Failed to dispatch message.' });
         }
 
         return res.status(200).json({ success: 'Message dispatched securely!' });
     } catch (err) {
         console.error('Resend Pipeline Error:', err);
-        return res.status(500).json({ error: 'Failed to dispatch message. Network error.' });
+        return res.status(500).json({ error: 'Network error.' });
     }
 });
 
